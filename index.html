@@ -81,6 +81,7 @@
         }
     </style>
 </head>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <body>
 
 <div id="game-container">
@@ -98,7 +99,10 @@
     
     <button id="next-btn" onclick="startGame()">继续</button>
 </div>
-
+<div style="margin-top: 15px; font-size: 12px; color: #888;">
+    本站总访问量 <span id="busuanzi_value_site_pv"></span> 次 | 
+    你是第 <span id="busuanzi_value_site_uv"></span> 位小伙伴
+</div>
 <script>
     const items = [
         { emoji: '🥕', name: '萝卜' },
