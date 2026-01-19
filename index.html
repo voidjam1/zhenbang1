@@ -96,7 +96,21 @@
     color: #ff6b6b; /* 让分数醒目一点 */
     font-size: 18px;
 }
+/* 分享按钮样式 */
+#share-btn {
+    background-color: #6a11cb;
+    color: white;
+    margin-top: 15px;
+    font-size: 14px;
+    padding: 8px 16px;
+    opacity: 0.8;
+}
+#share-btn:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+}
     </style>
+<button id="share-btn" onclick="copyShareText()">🥺点我分享记录</button>
 </head>
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <body>
@@ -145,6 +159,31 @@ let score = 0; // 当前分数
 let bestScore = localStorage.getItem('emoji_game_best') || 0;
 document.getElementById('best-score').textContent = bestScore;
 
+// 分享功能逻辑
+function copyShareText() {
+    const currentBest = localStorage.getItem('emoji_game_best') || 0;
+    const gameUrl = window.location.href; // 自动获取当前的网页链接
+    
+    // 自定义分享文案
+    const shareText = `【萝卜纸巾低脂小游戏】\n我在这里拿到了 ${currentBest} 分！想挑战我的纪录吗？闲的没事干吗？\n快来试试：${gameUrl}`;
+
+    // 调用浏览器剪贴板 API
+    navigator.clipboard.writeText(shareText).then(() => {
+        const btn = document.getElementById('share-btn');
+        const originalText = btn.textContent;
+        
+        // 给玩家一点视觉反馈
+        btn.textContent = "✅ 已复制到剪贴板！";
+        btn.style.backgroundColor = "#4CAF50";
+        
+        setTimeout(() => {
+            btn.textContent = originalText;
+            btn.style.backgroundColor = "#6a11cb";
+        }, 2000);
+    }).catch(err => {
+        alert("复制失败，请手动分享链接喵");
+    });
+}
 function startGame() {
     currentItem = items[Math.floor(Math.random() * items.length)];
     document.getElementById('emoji-display').textContent = currentItem.emoji;
