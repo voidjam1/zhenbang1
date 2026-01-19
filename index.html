@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>萝卜纸巾低脂小游戏</title>
     <style>
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
@@ -79,6 +80,22 @@
             font-weight: bold;
             font-size: 20px;
         }
+/* 成绩板样式：增加一点精致的背景感 */
+#score-board {
+    margin: 10px 20px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-around;
+    font-size: 14px;
+    color: #666;
+    border: 1px solid #eee;
+}
+.score-item b {
+    color: #ff6b6b; /* 让分数醒目一点 */
+    font-size: 18px;
+}
     </style>
 </head>
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -88,7 +105,10 @@
     <div class="header-image">
         <img src="https://voidjam1.github.io/zhenbang1/mao.jpg" alt="猫。">
     </div>
-
+<div id="score-board">
+    <div class="score-item">当前连胜: <b id="current-score">0</b></div>
+    <div class="score-item">最高纪录: <b id="best-score">0</b></div>
+</div>
     <div id="emoji-display">❓</div>
     <div id="result-text"></div>
     
@@ -103,35 +123,69 @@
     本站总访问量 <span id="busuanzi_value_site_pv"></span> 次 | 
     你是第 <span id="busuanzi_value_site_uv"></span> 位
 </div>
+</div>
+<div style="margin-top: 15px; font-size: 12px; color: #888;">
+    本网页代码使用gemini开发，仅供娱乐，仅供小范围传播
+</div>
+
+
+<div>
+<div style="margin-top: 15px; font-size: 12px; color: #888;">
+
+     作者：虚空果酱
+  （卧槽ai太好用了。）
+<div>
 <script>
-    const items = [
-        { emoji: '🥕', name: '萝卜' },
-        { emoji: '🧻', name: '纸巾' }
-    ];
-    let currentItem = {};
 
-    function startGame() {
-        currentItem = items[Math.floor(Math.random() * items.length)];
-        document.getElementById('emoji-display').textContent = currentItem.emoji;
-        document.getElementById('result-text').textContent = '';
-        document.getElementById('choices').style.display = 'flex';
-        document.getElementById('next-btn').style.display = 'none';
-    }
+const items = [{emoji:'🥕', name:'萝卜'}, {emoji:'🧻', name:'纸巾'}];
+let currentItem = {};
+let score = 0; // 当前分数
 
-    function checkAnswer(choice) {
-        const resultEl = document.getElementById('result-text');
-        if (choice === currentItem.name) {
-            resultEl.textContent = '蒸蚌！';
-            resultEl.style.color = '#4CAF50';
-            document.getElementById('choices').style.display = 'none';
-            document.getElementById('next-btn').style.display = 'block';
-        } else {
-            resultEl.textContent = '☝️🤨';
-            resultEl.style.color = '#ff6b6b';
-        }
-    }
+// 
+let bestScore = localStorage.getItem('emoji_game_best') || 0;
+document.getElementById('best-score').textContent = bestScore;
 
-    startGame();
+function startGame() {
+    currentItem = items[Math.floor(Math.random() * items.length)];
+    document.getElementById('emoji-display').textContent = currentItem.emoji;
+    document.getElementById('result-text').textContent = '';
+    document.getElementById('choices').style.display = 'flex';
+    document.getElementById('next-btn').style.display = 'none';
+}
+
+function checkAnswer(choice) {
+    const resultEl = document.getElementById('result-text');
+    const scoreEl = document.getElementById('current-score');
+    const bestEl = document.getElementById('best-score');
+
+    if (choice === currentItem.name) {
+        // 1. 答对了：增加分数
+        score++;
+        scoreEl.textContent = score;
+
+        // 2. 检查并更新最高纪录
+        if (score > bestScore) {
+            bestScore = score;
+            bestEl.textContent = bestScore;
+            // 把新纪录存入浏览器的“保险箱”
+            localStorage.setItem('emoji_game_best', bestScore);
+        }
+
+        resultEl.textContent = '蒸蚌！';
+        resultEl.style.color = '#4CAF50';
+        document.getElementById('choices').style.display = 'none';
+        document.getElementById('next-btn').style.display = 'block';
+    } else {
+        // 3. 答错了：连胜中断，分数归零
+        score = 0;
+        scoreEl.textContent = score;
+        resultEl.textContent = '☝️🤨';
+        resultEl.style.color = '#ff6b6b';
+    }
+}
+
+// 初始化游戏
+startGame();
 </script>
 
 </body>
